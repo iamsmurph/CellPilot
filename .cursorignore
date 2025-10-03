@@ -1,0 +1,72 @@
+# Exclude all data except Python code and preprocessing scripts
+data/**/*
+!data/**/*.py
+!data/preprocessing/**
+
+# Large scientific/model artifacts anywhere
+**/*.h5ad
+**/*.h5
+**/*.hdf5
+**/*.pt
+**/*.pth
+**/*.pkl
+**/*.pickle
+**/*.model
+
+# Archives and databases
+**/*.zip
+**/*.tar
+**/*.tar.gz
+**/*.7z
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+
+# Images (especially large figures)
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.bmp
+**/*.tiff
+
+# Logs
+**/*.log
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Python caches
+**/__pycache__/
+**/*.pyc
+
+# Notebooks' checkpoints
+**/.ipynb_checkpoints/
+
+# Test/type/formatter caches
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+
+# Build & packaging outputs
+**/.tox/
+**/dist/
+**/build/
+**/*.egg-info/
+**/pip-wheel-metadata/
+
+# Coverage
+**/.coverage
+**/coverage.xml
+**/htmlcov/
+
+# Sphinx build
+gollum/docs/_build/
+
+# OS cruft
+**/.DS_Store
+**/Thumbs.db
+
+

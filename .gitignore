@@ -1,0 +1,104 @@
+# Data files - CSV, TSV, and other tabular data
+data/**/*.csv
+data/**/*.tsv
+data/**/*.xlsx
+data/**/*.xls
+
+# Single-cell data files (H5AD, HDF5)
+data/**/*.h5ad
+data/**/*.h5
+data/**/*.hdf5
+
+# Model files
+data/**/*.pt
+data/**/*.pth
+data/**/*.pkl
+data/**/*.pickle
+data/**/*.model
+
+# Image files in data directories
+data/**/*.png
+data/**/*.jpg
+data/**/*.jpeg
+data/**/*.gif
+data/**/*.bmp
+data/**/*.tiff
+
+# Large text files
+data/**/*.txt
+
+# Compressed files
+data/**/*.zip
+data/**/*.tar
+data/**/*.tar.gz
+data/**/*.rar
+data/**/*.7z
+
+# Database files
+data/**/*.db
+data/**/*.sqlite
+data/**/*.sqlite3
+
+# Log files
+data/**/*.log
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment variables
+.env
+.env.local
+.env.*.local 
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Test/type caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Packaging/build outputs
+.tox/
+dist/
+build/
+*.egg-info/
+pip-wheel-metadata/
+
+# Coverage
+.coverage
+coverage.xml
+htmlcov/
+
+# Sphinx build artifacts
+gollum/docs/_build/
