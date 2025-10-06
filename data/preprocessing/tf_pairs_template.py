@@ -11,7 +11,7 @@ def canonicalize_pair(tf_a: str, tf_b: str) -> Tuple[str, str]:
     a, b = (tf_a or "").strip(), (tf_b or "").strip()
     return tuple(sorted([a, b]))  # type: ignore[return-value]
 
-def build_input_text(tf_a: str, tf_b: str, include_task_hint: bool = True) -> str:
+def build_template_text(tf_a: str, tf_b: str, include_task_hint: bool = True) -> str:
     a_norm, b_norm = canonicalize_pair(tf_a, tf_b)
     base = f"Transcription factor pair: {a_norm} and {b_norm}."
     if include_task_hint:
@@ -21,14 +21,13 @@ def build_input_text(tf_a: str, tf_b: str, include_task_hint: bool = True) -> st
 def generate_templates(
     input_csv: str,
     output_csv: str,
-    input_col_name: str = "input",
     include_task_hint: bool = True,
 ) -> str:
     """
-    Read the TF pair CSV and write a new CSV with an input text column.
+    Read the TF pair CSV and write a new CSV with only 'template' and 'jaccard' columns.
 
     The source CSV must include columns: "tf_a", "tf_b", "jaccard".
-    The output CSV will include all original columns plus a new "input" column.
+    The output CSV will include only "template" and "jaccard" columns.
     """
     required_cols = {"tf_a", "tf_b", "jaccard"}
     df = pd.read_csv(input_csv)
@@ -37,18 +36,15 @@ def generate_templates(
     if missing:
         raise ValueError(f"Missing required columns in {input_csv}: {sorted(missing)}")
 
-    tf_norm = df.apply(
-        lambda r: canonicalize_pair(str(r["tf_a"]), str(r["tf_b"])), axis=1
-    )
-    df["tf_a_norm"], df["tf_b_norm"] = zip(*tf_norm)
-
-    df[input_col_name] = df.apply(
-        lambda r: build_input_text(str(r["tf_a_norm"]), str(r["tf_b_norm"]), include_task_hint),
+    df["template"] = df.apply(
+        lambda r: build_template_text(str(r["tf_a"]), str(r["tf_b"]), include_task_hint),
         axis=1,
     )
 
+    output_df = df[["template", "jaccard"]]
+
     os.makedirs(os.path.dirname(output_csv), exist_ok=True)
-    df.to_csv(output_csv, index=False)
+    output_df.to_csv(output_csv, index=False)
     return output_csv
 
 def main() -> None:
@@ -65,13 +61,7 @@ def main() -> None:
         "--output",
         required=False,
         default="/data/rbg/users/seanmurphy/CellPilot/data/datasets/train/tf_pairs_templates_jaccard.csv",
-        help="Output CSV path (will include an \"input\" column)",
-    )
-    parser.add_argument(
-        "--input-col-name",
-        required=False,
-        default="input",
-        help="Name of the generated input text column",
+        help="Output CSV path (will include only 'template' and 'jaccard' columns)",
     )
     parser.add_argument(
         "--no-task-hint",
@@ -84,7 +74,6 @@ def main() -> None:
     output_path = generate_templates(
         input_csv=args.input,
         output_csv=args.output,
-        input_col_name=args.input_col_name,
         include_task_hint=not args.no_task_hint,
     )
     print(f"Wrote templated CSV to: {output_path}")

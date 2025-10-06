@@ -1,3 +1,6 @@
+data/model_cache/*
+data/datasets/*
+
 # Data files - CSV, TSV, and other tabular data
 data/**/*.csv
 data/**/*.tsv
@@ -99,6 +102,3 @@ pip-wheel-metadata/
 .coverage
 coverage.xml
 htmlcov/
-
-# Sphinx build artifacts
-gollum/docs/_build/

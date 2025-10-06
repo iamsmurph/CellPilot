@@ -1,6 +1,6 @@
 # Exclude all data 
-data/**/*
-!data/**/*.py
+data/datasets/*
+data/model_cache/*
 
 # Large scientific/model artifacts anywhere
 **/*.h5ad
@@ -60,9 +60,6 @@ env/
 **/.coverage
 **/coverage.xml
 **/htmlcov/
-
-# Sphinx build
-gollum/docs/_build/
 
 # OS cruft
 **/.DS_Store
