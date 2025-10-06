@@ -1,7 +1,6 @@
-# Exclude all data except Python code and preprocessing scripts
+# Exclude all data 
 data/**/*
 !data/**/*.py
-!data/preprocessing/**
 
 # Large scientific/model artifacts anywhere
 **/*.h5ad
