@@ -297,7 +297,7 @@ def main():
     # Initialize the parser with a description
     parser = ArgumentParser(
         description="Training script",
-        default_config_files=["configs/bochemian.yaml"],
+        default_config_files=["configs/pllm_phi_tf.yaml"],
     )
     parser.add_argument("--config", action=ActionConfigFile)
     parser.add_argument("--seed", type=int, help="Random seeds to use")
@@ -327,3 +327,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+

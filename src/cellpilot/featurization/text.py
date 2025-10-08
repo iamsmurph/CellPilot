@@ -20,15 +20,8 @@ from transformers import (
 from functools import partial
 import torch.nn.functional as F
 
+# Optional dependencies are imported lazily within the functions that require them
 
-from sentence_transformers import SentenceTransformer
-from InstructorEmbedding import INSTRUCTOR
-
-from openai import OpenAI
-
-client = OpenAI()
-
-from transformers import AutoTokenizer
 from cellpilot.featurization.utils.pooling import average_pool, last_token_pool, weighted_average_pool
 
 
@@ -37,10 +30,16 @@ from cellpilot.featurization.utils.pooling import average_pool, last_token_pool,
 
 @lru_cache(maxsize=None)
 def get_embedding(text, model="text-embedding-3-large"):
+    try:
+        from openai import OpenAI
+    except ImportError as e:
+        raise ImportError(
+            "Optional dependency 'openai' is not installed. Install it (e.g. `uv add openai`) or avoid OpenAI embeddings."
+        ) from e
+
+    client = OpenAI()
     text = text.replace("\n", " ")
-    return (
-        client.embeddings.create(input=[text], model=model).data[0].embedding
-    )
+    return client.embeddings.create(input=[text], model=model).data[0].embedding
 
 
 def ada_embeddings(texts, model="text-embedding-ada-002"):
@@ -223,6 +222,13 @@ def get_huggingface_embeddings(
 def get_sentence_transformer_embeddings(
     texts, model_name="bigscience/sgpt-bloom-7b1-msmarco", batch_size=32
 ):
+    try:
+        from sentence_transformers import SentenceTransformer
+    except ImportError as e:
+        raise ImportError(
+            "Optional dependency 'sentence-transformers' is not installed. Install it (e.g. `uv add sentence-transformers`) or choose a different featurizer."
+        ) from e
+
     model = SentenceTransformer(model_name)
     embeddings_list = []
     for i in tqdm(
@@ -252,6 +258,13 @@ def instructor_embeddings(
     :type instruction: str
     :return: NumPy array of Instructor embeddings
     """
+    try:
+        from InstructorEmbedding import INSTRUCTOR
+    except ImportError as e:
+        raise ImportError(
+            "Optional dependency 'InstructorEmbedding' is not installed. Install it (e.g. `uv add InstructorEmbedding`) or choose a different featurizer."
+        ) from e
+
     # Load the INSTRUCTOR model
     model = INSTRUCTOR(model_name).to(
         "cuda" if torch.cuda.is_available() else "cpu"

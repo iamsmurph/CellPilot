@@ -102,3 +102,6 @@ pip-wheel-metadata/
 .coverage
 coverage.xml
 htmlcov/
+
+# Experiment tracking / run artifacts
+wandb/

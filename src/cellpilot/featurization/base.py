@@ -37,16 +37,11 @@ class Featurizer:
         Build a registry of featurization functions.
         This centralizes the import logic and makes it easier to add new methods.
         """
-        from cellpilot.featurization.molecular import fingerprints, fragments, mqn_features, chemberta_features
         from cellpilot.featurization.text import get_tokens, get_huggingface_embeddings, instructor_embeddings
         from cellpilot.featurization.reaction import rxnfp, drfp, one_hot
         from cellpilot.featurization.general import precalculated, all_continuous
-        
-        return {
-            "fingerprints": fingerprints,
-            "fragments": fragments,
-            "mqn_features": mqn_features,
-            "chemberta_features": chemberta_features,
+
+        registry = {
             "ohe": one_hot,
             "rxnfp": rxnfp,
             "drfp": drfp,
@@ -56,6 +51,26 @@ class Featurizer:
             "precalculated": precalculated,
             "all_continuous": all_continuous,
         }
+
+        # Conditionally register molecular featurizers to avoid hard dependency on rdkit
+        try:
+            from cellpilot.featurization.molecular import (
+                fingerprints,
+                fragments,
+                mqn_features,
+                chemberta_features,
+            )
+            registry.update({
+                "fingerprints": fingerprints,
+                "fragments": fragments,
+                "mqn_features": mqn_features,
+                "chemberta_features": chemberta_features,
+            })
+        except Exception:
+            # rdkit or transformers for chemberta may be unavailable; skip registration
+            pass
+
+        return registry
     
     @property
     def output_dim(self) -> int:
