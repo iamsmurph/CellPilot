@@ -13,10 +13,24 @@ def canonicalize_pair(tf_a: str, tf_b: str) -> Tuple[str, str]:
 
 def build_template_text(tf_a: str, tf_b: str, include_task_hint: bool = True) -> str:
     a_norm, b_norm = canonicalize_pair(tf_a, tf_b)
-    base = f"Transcription factor pair: {a_norm} and {b_norm}."
+    lines = []
     if include_task_hint:
-        return base + " Task: maximize ChIP-seq peak-overlap Jaccard index."
-    return base
+        lines.append(
+            "Instruction: Represent the propensity that two human transcription factors co-bind (appear in overlapping ChIP-seq peaks). Encode signal sources such as binding motifs, known PPIs, and chromatin context. Map to the concept of expected Jaccard overlap (0–1)."
+        )
+    lines.append("Input:")
+    lines.append("species: Homo sapiens (hg38)")
+    lines.append("assay: ChIP-seq (IDR peaks; Jaccard on peak sets)")
+    lines.append("pair_order: unordered")
+    lines.append(f"TF_A: {a_norm}")
+    lines.append(f"TF_B: {b_norm}")
+    if include_task_hint:
+        lines.append("")
+        lines.append("Scale anchors:")
+        lines.append("~0.0: little/no known co-binding or context overlap")
+        lines.append("~0.5: moderate overlap in some contexts or cell types")
+        lines.append("~1.0: frequent co-binding across contexts with strong evidence")
+    return "\n".join(lines)
 
 def generate_templates(
     input_csv: str,

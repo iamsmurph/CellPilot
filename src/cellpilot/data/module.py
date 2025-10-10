@@ -83,7 +83,7 @@ class BaseDataModule(pl.LightningDataModule, ABC):
             self.exclude = None
 
         init_indexes, _ = self.initializer.fit(self.x, exclude=self.exclude)
-        print(f"Selected reactions: {init_indexes}")
+        print(f"Selected indices: {init_indexes}")
 
         train_df_indices = self.original_indices[init_indexes].tolist()
         self.train_indexes = (

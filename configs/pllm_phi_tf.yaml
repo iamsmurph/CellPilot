@@ -82,4 +82,4 @@ surrogate_model:
         lora_dropout: 0.2
         trainable: true
 n_iters: 50
-seed: 1
+seed: -1

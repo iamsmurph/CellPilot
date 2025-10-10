@@ -1,9 +1,9 @@
 import warnings
 from botorch.exceptions import InputDataWarning
-
 import re
 import torch
 import logging
+import secrets
 
 warnings.filterwarnings("ignore", category=InputDataWarning)
 logger = logging.getLogger("pytorch_lightning.utilities.rank_zero")
@@ -79,6 +79,7 @@ MODEL_EMBEDDING_SIZES = {
     "nomic-ai/modernbert-embed-base": 768,
     "Qwen/Qwen2-7B-Instruct": 3584,
     "t5-base": 768,
+    "QizhiPei/biot5-plus-base": 768,
     "mistralai/Mistral-7B-Instruct-v0.2": 4096,
     "text-embedding-3-large": 3072,
     "nomic-ai/modernbert-embed-base;get_huggingface_embeddings;normalize:False;pooling:cls": 768,
@@ -300,7 +301,7 @@ def main():
         default_config_files=["configs/pllm_phi_tf.yaml"],
     )
     parser.add_argument("--config", action=ActionConfigFile)
-    parser.add_argument("--seed", type=int, help="Random seeds to use")
+    parser.add_argument("--seed", type=int, help="Random seed; use -1 to auto-generate")
     parser.add_argument("--benchmark", type=str, help="Run a specific benchmark")
 
     parser.add_argument("--n_iters", type=int, help="How many iterations to run")
@@ -321,8 +322,18 @@ def main():
 
     # parse arguments
     args = parser.parse_args()
-    seed_everything(args["seed"], workers=True)
-    train(args.as_dict())
+    config = args.as_dict()
+
+    seed_value = config.get("seed")
+    if seed_value == -1:
+        # Generate a secure random 31-bit seed (fits in signed 32-bit range)
+        generated_seed = secrets.randbelow(2**31 - 1)
+        seed_value = generated_seed
+        config["seed"] = seed_value
+        print(f"Auto-generated seed: {seed_value}")
+
+    seed_everything(seed_value, workers=True)
+    train(config)
 
 
 if __name__ == "__main__":
